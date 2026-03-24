@@ -17,12 +17,10 @@ Chrome_options.add_experimental_option("detach", True)
 
 user_data_dir = os.path.join(os.getcwd(), "chrome_profile")
 Chrome_options.add_argument(f"--user-data-dir={user_data_dir}")
-# Chrome_options.add_argument("user-data-dir={}".format(user_data_dir))
 
 driver = webdriver.Chrome(options=Chrome_options)
 driver.get(URL)
 wait = WebDriverWait(driver, 2)
-# sleep(2)
 try:
     # login = driver.find_element(By.ID, value="login-button")
     login = wait.until(EC.element_to_be_clickable((By.ID, "login-button")))
@@ -47,17 +45,13 @@ try:
         date = day.find_element(By.CLASS_NAME, "Schedule_dayTitle__YBybs").text
 
         if "Tue" in date:
-            # print(day.text)
             lst = day.find_elements(By.CLASS_NAME, "ClassCard_cardHeader__D9pf3")
             for item in lst:
-                # print(item.text)
                 if "6:00" in item.text:
-                    selective_class = item.find_element(By.TAG_NAME,
-                                                        "button")
+                    selective_class = item.find_element(By.TAG_NAME, "button")
                     selective_class.click()
                     print(f"Booked:{item.text}")
 
 except NoSuchElementException:
     print("Login failed")
     driver.quit()
-    exit()
