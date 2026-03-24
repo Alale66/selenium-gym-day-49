@@ -1,0 +1,63 @@
+import os
+from selenium import webdriver
+from selenium.common import NoSuchElementException
+from selenium.webdriver.common.by import By
+from dotenv import load_dotenv
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+load_dotenv()
+
+URL = "https://appbrewery.github.io/gym/"
+ACCOUNT_EMAIL = os.getenv("ACCOUNT_EMAIL")
+ACCOUNT_PASSWORD = os.getenv("ACCOUNT_PASSWORD")
+
+Chrome_options = webdriver.ChromeOptions()
+Chrome_options.add_experimental_option("detach", True)
+
+user_data_dir = os.path.join(os.getcwd(), "chrome_profile")
+Chrome_options.add_argument(f"--user-data-dir={user_data_dir}")
+# Chrome_options.add_argument("user-data-dir={}".format(user_data_dir))
+
+driver = webdriver.Chrome(options=Chrome_options)
+driver.get(URL)
+wait = WebDriverWait(driver, 2)
+# sleep(2)
+try:
+    # login = driver.find_element(By.ID, value="login-button")
+    login = wait.until(EC.element_to_be_clickable((By.ID, "login-button")))
+    login.click()
+
+    # email = driver.find_element(By.ID, value="email-input")
+    email = wait.until(EC.presence_of_element_located((By.ID, "email-input")))
+    email.clear()
+    email.send_keys(ACCOUNT_EMAIL)
+
+    # password = driver.find_element(By.ID, value="password-input")
+    password = wait.until(EC.presence_of_element_located((By.ID, "password-input")))
+    password.clear()
+    password.send_keys(ACCOUNT_PASSWORD)
+
+    # submit = driver.find_element(By.ID, value="submit-button").click()
+    submit = wait.until(EC.presence_of_element_located((By.ID, "submit-button")))
+    submit.click()
+
+    class_lst = wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, "Schedule_dayGroup__y79__")))
+    for day in class_lst:
+        date = day.find_element(By.CLASS_NAME, "Schedule_dayTitle__YBybs").text
+
+        if "Tue" in date:
+            # print(day.text)
+            lst = day.find_elements(By.CLASS_NAME, "ClassCard_cardHeader__D9pf3")
+            for item in lst:
+                # print(item.text)
+                if "6:00" in item.text:
+                    selective_class = item.find_element(By.TAG_NAME,
+                                                        "button")
+                    selective_class.click()
+                    print(f"Booked:{item.text}")
+
+except NoSuchElementException:
+    print("Login failed")
+    driver.quit()
+    exit()
