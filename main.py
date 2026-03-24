@@ -1,4 +1,6 @@
 import os
+import re
+
 from selenium import webdriver
 from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
@@ -48,9 +50,18 @@ try:
             lst = day.find_elements(By.CLASS_NAME, "ClassCard_cardHeader__D9pf3")
             for item in lst:
                 if "6:00" in item.text:
-                    selective_class = item.find_element(By.TAG_NAME, "button")
-                    selective_class.click()
-                    print(f"Booked:{item.text}")
+                    button = item.find_element(By.TAG_NAME, "button")
+                    title=item.find_element(By.TAG_NAME, "h3").text
+                    formated_date=date.split("(")[1].replace(')', '')
+                    if button.text=="Booked":
+                        print(f"Already Booked:{title} on {date}")
+                    elif button.text=="Waitlisted":
+                        print(f"Already on waitlist:{title} on {date}")
+                    elif button.text=="Join Waitlist":
+                        print(f"Joined waitlist for:{title} on {date}")
+                    else:
+                        button.click()
+                        print(f"Booked:{title} on {date}")
 
 except NoSuchElementException:
     print("Login failed")
