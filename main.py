@@ -54,14 +54,14 @@ try:
                     title=item.find_element(By.TAG_NAME, "h3").text
                     formated_date=date.split("(")[1].replace(')', '')
                     if button.text=="Booked":
-                        print(f"Already Booked:{title} on {date}")
+                        print(f"Already Booked: {title} on {formated_date}")
                     elif button.text=="Waitlisted":
-                        print(f"Already on waitlist:{title} on {date}")
+                        print(f"Already on waitlist: {title} on {formated_date}")
                     elif button.text=="Join Waitlist":
-                        print(f"Joined waitlist for:{title} on {date}")
+                        print(f"Joined waitlist for: {title} on {formated_date}")
                     else:
                         button.click()
-                        print(f"Booked:{title} on {date}")
+                        print(f"Booked: {title} on {formated_date}")
 
 except NoSuchElementException:
     print("Login failed")
