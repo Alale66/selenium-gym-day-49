@@ -14,7 +14,7 @@ Chrome_options.add_argument(f"--user-data-dir={user_data_dir}")
 
 driver = webdriver.Chrome(options=Chrome_options)
 driver.get(URL)
-wait = WebDriverWait(driver, 2)
+wait = WebDriverWait(driver, 3)
 
 try:
     Login().log_in(wait)
